@@ -54,14 +54,14 @@ mpl.rcParams['savefig.bbox'] = "tight"
 
 #%% Input data
 
-replot_tasks = dict(T1=False, 
-                    T4=False,
-                    T5=False,
-                    T6=False,
-                    T7=False,
-                    T8=False,
-                    T9=False,
-                    T10=False,
+replot_tasks = dict(T1=True, 
+                    T4=True,
+                    T5=True,
+                    T6=True,
+                    T7=True,
+                    T8=True,
+                    T9=True,
+                    T10=True,
                     T11=True,
                     )
 
@@ -78,10 +78,13 @@ u_means = np.zeros(struct_len)
 v_means = np.zeros(struct_len)
 y = np.zeros(struct_len)
 for i in range(struct_len):
-    t = structs[i].t
-    u_means[i] = integrate.trapezoid(structs[i].u, t) / t[-1]
-    v_means[i] = integrate.trapezoid(structs[i].v, t) / t[-1]
+    tt = structs[i].tt
+
+    u_means[i] = float(np.sum(structs[i].u*tt))/np.sum(tt)
+    v_means[i] = float(np.sum(structs[i].v*tt))/np.sum(tt)
     y[i] = structs[i].y
+
+del tt
 
 #Manually insert start and end values
 y = np.append(np.insert(y, 0, 0), .07)
@@ -255,18 +258,18 @@ turb_quant_v = np.zeros(struct_len)
 turb_quant_uv = np.zeros(struct_len)
 
 for i in range(struct_len):
-    t = structs[i].t
+    tt = structs[i].tt
     
     u_var = structs[i].u-u_means[i]
     v_var = structs[i].v-v_means[i]
     
-    u_var_mean[i] = integrate.trapezoid(np.power(u_var, 2), t) / t[-1]
-    v_var_mean[i] = integrate.trapezoid(np.power(v_var, 2), t) / t[-1]
+    u_var_mean[i] = float(np.sum(np.power(u_var,2)*tt))/np.sum(tt)
+    v_var_mean[i] = float(np.sum(np.power(v_var,2)*tt))/np.sum(tt)
     
     turb_quant_u[i] = np.sqrt(u_var_mean[i]) / U_f
     turb_quant_v[i] = np.sqrt(v_var_mean[i]) / U_f
-    turb_quant_uv[i] = np.sqrt(-integrate.trapezoid(u_var*v_var, t) / t[-1])/U_f    
-
+    turb_quant_uv[i] = np.sqrt(-float(np.sum(u_var*v_var*tt))/np.sum(tt))/U_f    
+del tt
 
 
 if replot_tasks["T7"]:
