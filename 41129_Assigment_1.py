@@ -42,23 +42,10 @@ mpl.rcParams['axes.labelpad'] = 20
 #Latex font
 mpl.rcParams['text.usetex'] = True          #Use standard latex font
 mpl.rcParams['font.family'] = 'serif'  # LaTeX default font family
-# mpl.rcParams['text.latex.preamble'] = "\n".join([r'\usepackage{amsmath}',  # Optional, for math symbols
-#                                                  r'\usepackage{siunitx}'])
-
-# =============================================================================
-# pgf_with_latex = {                      # setup matplotlib to use latex for output
-#     "pgf.texsystem": "pdflatex",        # change this if using xetex or lautex
-#     "text.usetex": True,                # use LaTeX to write all text
-#     "pgf.preamble": "\n".join([
-#         r"\usepackage[utf8x]{inputenc}",    # use utf8 fonts 
-#         r"\usepackage[T1]{fontenc}",        # plots will be generated
-#         r"\usepackage{siunitx}",
-#         ])                                   # using this preamble
-#     }
-# 
-# mpl.rcParams.update(pgf_with_latex)
-# =============================================================================
-
+mpl.rcParams["pgf.texsystem"] = "pdflatex"  # Use pdflatex for generating PDFs
+mpl.rcParams["pgf.rcfonts"] = False  # Ignore Matplotlib's default font settings
+mpl.rcParams['text.latex.preamble'] = "\n".join([r'\usepackage{amsmath}',  # Optional, for math symbols
+                                                 r'\usepackage{siunitx}'])
 
 # #Custom overline function (cf. https://tex.stackexchange.com/questions/22100/the-bar-and-overline-commands)
 # #Note: this slows down the code extremely sometimes 
@@ -70,15 +57,15 @@ mpl.rcParams['savefig.bbox'] = "tight"
 
 #%% Input data
 
-replot_tasks = dict(T1=True, 
-                    T4=True,
-                    T5=True,
-                    T6=True,
+replot_tasks = dict(T1=False, 
+                    T4=False,
+                    T5=False,
+                    T6=False,
                     T7=True,
-                    T8=True,
-                    T9=True,
-                    T10=True,
-                    T11=True,
+                    T8=False,
+                    T9=False,
+                    T10=False,
+                    T11=False,
                     )
 
 h = .07         #[m]
@@ -214,6 +201,7 @@ if replot_tasks["T5"]:
                                     rect_log, rect_out], 
                            loc='lower right')
     ax5.add_artist(plt5_lgd2)
+    
     #Formatting
     dx_ticks = 2
     ax5.set_ylabel('\[y^+\:[-]\]')
@@ -292,16 +280,16 @@ if replot_tasks["T7"]:
     
     ax7.scatter(y_plus[1:-1],
                 turb_quant_u,
-                label=r"\[\sqrt{\overline{u^{'2}}}/U_f\]", 
+                label=r"$\frac{\sqrt{\overline{u^{\prime 2}}}}{U_f}$", 
                 marker = "D", s=100, zorder=2)
     ax7.scatter(y_plus[1:-1],
                 turb_quant_v,
-                label=r"\[\sqrt{\overline{v^{'2}}}/U_f\]",
+                label=r"$\frac{\sqrt{\overline{v^{\prime 2}}}}{U_f}$",
                 marker = "h", s=100, facecolor="none", edgecolor="k", 
                 linewidth=2, zorder=2)
     ax7.scatter(y_plus[1:-1],
                 turb_quant_uv,
-                label=r"\[\sqrt{\overline{u^{'}v^{'}}}/U_f\]",
+                label=r"$\frac{\sqrt{-\overline{u^{\prime}v^{\prime}}}}{U_f}$",
                 marker = "v", s=100, zorder=2)
     
     #Empty scatter (needed for the distribution of the labels in the columns 
@@ -331,11 +319,15 @@ if replot_tasks["T7"]:
     #Formatting
     ax7.set_xlim([0,100])
     ax7.set_ylim([0,4.5])
-    ax7.set_xlabel('\[y^+\:[-]\]')
-    ax7.set_ylabel(r'Turbulence quantities $[-]$')
+    ax7.set_xlabel('$y^+$')
+    ax7.set_ylabel(r'Turbulence quantities')
     ax7.grid(zorder=1)
     ax7.legend(loc="upper right", ncols=2)
+    
     fig7.savefig(fname="Task_7_plot.svg")
+    fig7.savefig("Task_7_plot.pdf", format="pdf")       # Save PDF for inclusion
+    fig7.savefig("Task_7_plot.pgf")                     # Save PGF file for text inclusion in LaTeX
+    
     plt.close(fig7)
 else:
     print("Plot for Task 7 not replotted")
@@ -345,21 +337,21 @@ if replot_tasks["T8"]:
     fig8, ax8 = plt.subplots(figsize=(16, 10))
     ax8.scatter(y[1:-1]/h,
                 turb_quant_u,
-                label=r"\[\sqrt{\overline{u^{'2}}}/U_f\]",
+                label=r"$\frac{\sqrt{\overline{u^{\prime 2}}}}{U_f}$",
                 marker = "d", s=80, zorder=2)
     ax8.scatter(y[1:-1]/h,
                 turb_quant_v,
-                label=r"\[\sqrt{\overline{v^{'2}}}/U_f\]",
+                label=r"$\frac{\sqrt{\overline{v^{\prime 2}}}}{U_f}$",
                 marker = "h", s=100, facecolor="none", edgecolor="k", 
                 linewidth=2, zorder=2)
     ax8.scatter(y[1:-1]/h,
                 turb_quant_uv,
-                label=r"\[\sqrt{\overline{u^{'}v^{'}}}/U_f\]",
+                label=r"$\frac{-\overline{u^{\prime}v^{\prime}}}{U_f^2}$",
                 marker = "v", s=100, zorder=2)
     
     #Formatting
     ax8.set_xlim([0,1])
-    ax8.set_xlabel('\[y/h\:[-]\]')
+    ax8.set_xlabel('$y/h\:[-]$')
     ax8.set_ylabel(r'Turbulence quantities $[-]$')
     ax8.grid(zorder=1)
     ax8.legend(loc="upper right")
