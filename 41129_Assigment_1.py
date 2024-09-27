@@ -42,12 +42,28 @@ mpl.rcParams['axes.labelpad'] = 20
 #Latex font
 mpl.rcParams['text.usetex'] = True          #Use standard latex font
 mpl.rcParams['font.family'] = 'serif'  # LaTeX default font family
-mpl.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'  # Optional, for math symbols
+# mpl.rcParams['text.latex.preamble'] = "\n".join([r'\usepackage{amsmath}',  # Optional, for math symbols
+#                                                  r'\usepackage{siunitx}'])
 
-#Custom overline function (cf. https://tex.stackexchange.com/questions/22100/the-bar-and-overline-commands)
-#Note: this slows down the code extremely sometimes 
-plt.rcParams['text.latex.preamble'] = r"""
-\newcommand{\ols}[1]{\mskip.5\thinmuskip\overline{\mskip-.5\thinmuskip {#1} \mskip-.5\thinmuskip}\mskip.5\thinmuskip}""" 
+# =============================================================================
+# pgf_with_latex = {                      # setup matplotlib to use latex for output
+#     "pgf.texsystem": "pdflatex",        # change this if using xetex or lautex
+#     "text.usetex": True,                # use LaTeX to write all text
+#     "pgf.preamble": "\n".join([
+#         r"\usepackage[utf8x]{inputenc}",    # use utf8 fonts 
+#         r"\usepackage[T1]{fontenc}",        # plots will be generated
+#         r"\usepackage{siunitx}",
+#         ])                                   # using this preamble
+#     }
+# 
+# mpl.rcParams.update(pgf_with_latex)
+# =============================================================================
+
+
+# #Custom overline function (cf. https://tex.stackexchange.com/questions/22100/the-bar-and-overline-commands)
+# #Note: this slows down the code extremely sometimes 
+# plt.rcParams['text.latex.preamble'] = r"""
+# \newcommand{\ols}[1]{\mskip.5\thinmuskip\overline{\mskip-.5\thinmuskip {#1} \mskip-.5\thinmuskip}\mskip.5\thinmuskip}""" 
 
 #Export
 mpl.rcParams['savefig.bbox'] = "tight"
@@ -92,13 +108,13 @@ u_means = np.append(np.insert(u_means, 0, 0), .3)
 
 if replot_tasks["T1"]:
     fig1, ax1 = plt.subplots(figsize=(16, 10))
-    ax1.scatter(u_means, y, s=150, linewidths=1.5)
+    ax1.scatter(u_means, y, s=150, linewidths=1.5, zorder=2)
     
     #Formatting
     ax1.set_title('Mean velocity')
     ax1.set_ylabel('\[y\:[m]\]')
     ax1.set_xlabel(r'\[\overline{u}\:[m/s]\]')
-    ax1.grid()
+    ax1.grid(zorder=1)
     
     fig1.savefig(fname="Task_1_plot.svg")
     plt.close(fig1)
@@ -136,40 +152,39 @@ i_log = np.intersect1d(i_lower_bound, i_upper_bound)
 popt = np.polyfit (np.log(y[i_log]), u_means[i_log], deg=1)
 func_log_layer = lambda y: popt[0]*np.log(y) + popt[1]
 
-
-
 if replot_tasks["T4"]:
     fig4, ax4 = plt.subplots(figsize=(10, 10))
-    ax4.scatter(u_means, y, label = "true data")
+    ax4.scatter(u_means, y, label = "true data", s=100, zorder=2)
     ax4.plot(func_log_layer(y[i_log]),
             y[i_log],
             label="Approximation function",
-            ls="-", c='k')
+            ls="-", c='k', zorder=2)
     
     #Formatting
     ax4.set_ylabel('\[y\:[m]\]')
     ax4.set_xlabel(r'\[\overline{u}\:[m/s]\]')
     ax4.set_yscale("log")
-    ax4.grid()
+    ax4.grid(zorder=1)
     ax4.legend(loc="lower right")
     fig4.savefig(fname="Task_4_plot.svg")
     plt.close(fig4)
 else:
     print("Plot for Task 4 not replotted")
 
-#Recalculate U_f (Eq. 3.15 - should be the same for all)
-U_f = np.mean(y_plus[1:] * nu / y[1:])
+#Recalculate U_f (Eq. 3.43 & 3.44) & y_plus
+U_f = popt[0]/2.5
+y_plus = y*U_f/nu
 
 #%% Action Item 5
 
 if replot_tasks["T5"]:
     fig5, ax5 = plt.subplots(figsize=(16, 10))
     plt5_sc1 = ax5.scatter(u_means/U_f, y_plus, label = "True data", 
-                           s=150, linewidths=1.5)
+                           s=170, linewidths=1.8, zorder=2)
     plt5_line1 = ax5.plot(func_log_layer(y[i_log])/U_f,
                           y_plus[i_log],
                           label="Approximation function",
-                          ls="--", c='k', lw=1.5)
+                          ls="--", c='k', lw=1.5, zorder=2)
     
     plt5_lgd1 = plt.legend(handles=[plt5_sc1, plt5_line1[0]], 
                            loc='upper left')
@@ -177,18 +192,18 @@ if replot_tasks["T5"]:
     
     #Regions
     rect_visc_sub = mpl.patches.Rectangle((-10,0), 40, 5, 
-                                          hatch="//\\\\", fc = "1", alpha = .35,
-                                          label= "Viscous sublayer")
+                                          hatch="//\\\\", fc = "1", alpha = .32,
+                                          label= "Viscous sublayer", zorder=0)
     rect_visc_buffer = mpl.patches.Rectangle((-10,5), 40, 30-5, 
-                                             hatch="//", fc = "1", alpha = .45,
-                                             label= "Buffer layer")
+                                             hatch="//", fc = "1", alpha = .42,
+                                             label= "Buffer layer", zorder=0)
     rect_log = mpl.patches.Rectangle((-10,30), 40, .1*h*U_f_est/nu-30, 
-                                     hatch="\\\\/",  fc = "1", alpha = .35,
-                                     label= "Logarithmic layer")
+                                     hatch="\\\\/",  fc = "1", alpha = .32,
+                                     label= "Logarithmic layer", zorder=0)
     rect_out = mpl.patches.Rectangle((-10, .1*h*U_f_est/nu), 
                                      40, .9*h*U_f_est/nu, 
-                                     hatch="\\\\", fc = "1", alpha = .45,
-                                     label= "Outer region")
+                                     hatch="\\\\", fc = "1", alpha = .42,
+                                     label= "Outer region", zorder=0)
     
     ax5.add_patch(rect_visc_sub)
     ax5.add_patch(rect_visc_buffer)
@@ -207,7 +222,7 @@ if replot_tasks["T5"]:
     ax5.set_xlim([0, max(u_means/U_f)*1.05])
     ax5.set_xticks(np.arange(0, int(np.ceil(u_means[-1]/U_f/dx_ticks))*dx_ticks, 
                             dx_ticks))
-    ax5.grid()
+    ax5.grid(zorder=1)
     fig5.savefig(fname="Task_5_plot.svg")
     
     if not replot_tasks["T6"]:
@@ -228,15 +243,15 @@ def dfunc_3_108(y_p, kappa=.4, A_d=25):
                                                   
 u_vD = integrate.cumulative_trapezoid (y=dfunc_3_108(y_plus, kappa=.4, A_d=25),
                                        x=y_plus)
-y_plus_vd = np.array([(y_plus[i+1]+y_plus[i])/2 for i in range(len(y_plus)-1)])
+# y_plus_vd = np.array([(y_plus[i+1]+y_plus[i])/2 for i in range(len(y_plus)-1)])
 
 if replot_tasks["T6"]:
     if replot_tasks["T5"]:
-        plt6_line1 = ax5.plot(u_vD/U_f,
-                               y_plus_vd,
+        plt6_sc1 = ax5.scatter(u_vD/U_f,
+                               y_plus[1:],
                                label="van Driest velocity", 
-                               ls = "--", marker = "v", ms=7)
-        plt5_lgd1 = plt.legend(handles=[plt5_sc1, plt5_line1[0], plt6_line1[0]], 
+                               marker = "d", s=100, zorder=2)
+        plt5_lgd1 = plt.legend(handles=[plt5_sc1, plt5_line1[0], plt6_sc1], 
                                loc='upper left')
         plt5_lgd1 = ax5.add_artist(plt5_lgd1)
         fig5.savefig(fname="Task_6_plot.svg",
@@ -260,7 +275,7 @@ turb_quant_uv = np.zeros(struct_len)
 for i in range(struct_len):
     tt = structs[i].tt
     
-    u_var = structs[i].u-u_means[i]
+    u_var = structs[i].u-u_means[i+1]
     v_var = structs[i].v-v_means[i]
     
     u_var_mean[i] = float(np.sum(np.power(u_var,2)*tt))/np.sum(tt)
@@ -274,18 +289,20 @@ del tt
 
 if replot_tasks["T7"]:
     fig7, ax7 = plt.subplots(figsize=(16, 10))
-    ax7.plot(y_plus[1:-1],
+    
+    ax7.scatter(y_plus[1:-1],
                 turb_quant_u,
                 label=r"\[\sqrt{\overline{u^{'2}}}/U_f\]", 
-                ls = "--", marker = "+")
-    ax7.plot(y_plus[1:-1],
+                marker = "D", s=100, zorder=2)
+    ax7.scatter(y_plus[1:-1],
                 turb_quant_v,
                 label=r"\[\sqrt{\overline{v^{'2}}}/U_f\]",
-                ls = "--", marker = "x")
-    ax7.plot(y_plus[1:-1],
+                marker = "h", s=100, facecolor="none", edgecolor="k", 
+                linewidth=2, zorder=2)
+    ax7.scatter(y_plus[1:-1],
                 turb_quant_uv,
                 label=r"\[\sqrt{\overline{u^{'}v^{'}}}/U_f\]",
-                ls = "--", marker = "v", ms=7)
+                marker = "v", s=100, zorder=2)
     
     #Empty scatter (needed for the distribution of the labels in the columns 
     # of the legend)
@@ -293,18 +310,18 @@ if replot_tasks["T7"]:
     
     #Regions
     rect_visc_sub = mpl.patches.Rectangle((0,0), 5, 5, 
-                                          hatch="//\\\\", fc = "1", alpha = .35,
-                                          label= "Viscous sublayer")
+                                          hatch="//\\\\", fc = "1", alpha = .32,
+                                          label= "Viscous sublayer", zorder=0)
     rect_visc_buffer = mpl.patches.Rectangle((5, 0), 30-5, 5, 
-                                             hatch="//", fc = "1", alpha = .45,
+                                             hatch="//", fc = "1", alpha = .42,
                                              label= "Buffer layer")
     rect_log = mpl.patches.Rectangle((30,0), .1*h*U_f/nu-30, 5, 
-                                     hatch="\\\\/",  fc = "1", alpha = .35,
-                                     label= "Logarithmic layer")
+                                     hatch="\\\\/",  fc = "1", alpha = .32,
+                                     label= "Logarithmic layer", zorder=0)
     rect_out = mpl.patches.Rectangle((.1*h*U_f/nu, 0), 
                                      .9*h*U_f/nu, 5, 
-                                     hatch="\\\\", fc = "1", alpha = .45,
-                                     label= "Outer region")
+                                     hatch="\\\\", fc = "1", alpha = .42,
+                                     label= "Outer region", zorder=0)
      
     ax7.add_patch(rect_visc_sub)
     ax7.add_patch(rect_visc_buffer)
@@ -316,7 +333,7 @@ if replot_tasks["T7"]:
     ax7.set_ylim([0,4.5])
     ax7.set_xlabel('\[y^+\:[-]\]')
     ax7.set_ylabel(r'Turbulence quantities $[-]$')
-    ax7.grid()
+    ax7.grid(zorder=1)
     ax7.legend(loc="upper right", ncols=2)
     fig7.savefig(fname="Task_7_plot.svg")
     plt.close(fig7)
@@ -326,24 +343,25 @@ else:
 #%% Action Item 8
 if replot_tasks["T8"]:
     fig8, ax8 = plt.subplots(figsize=(16, 10))
-    ax8.plot(y[1:-1]/h,
+    ax8.scatter(y[1:-1]/h,
                 turb_quant_u,
                 label=r"\[\sqrt{\overline{u^{'2}}}/U_f\]",
-                ls = "--", marker = "+")
-    ax8.plot(y[1:-1]/h,
+                marker = "d", s=80, zorder=2)
+    ax8.scatter(y[1:-1]/h,
                 turb_quant_v,
                 label=r"\[\sqrt{\overline{v^{'2}}}/U_f\]",
-                ls = "--", marker = "x")
-    ax8.plot(y[1:-1]/h,
+                marker = "h", s=100, facecolor="none", edgecolor="k", 
+                linewidth=2, zorder=2)
+    ax8.scatter(y[1:-1]/h,
                 turb_quant_uv,
                 label=r"\[\sqrt{\overline{u^{'}v^{'}}}/U_f\]",
-                ls = "--", marker = "2")
+                marker = "v", s=100, zorder=2)
     
     #Formatting
     ax8.set_xlim([0,1])
     ax8.set_xlabel('\[y/h\:[-]\]')
     ax8.set_ylabel(r'Turbulence quantities $[-]$')
-    ax8.grid()
+    ax8.grid(zorder=1)
     ax8.legend(loc="upper right")
     fig8.savefig(fname="Task_8_plot.svg",
                 bbox_inches = "tight")
@@ -359,13 +377,14 @@ if replot_tasks["T9"]:
     fig9, ax9 = plt.subplots(figsize=(16, 10))
     ax9.scatter(y[1:-1]/h,
             tke,
-            label=r"\[k/U_f^2\]")
+            label=r"\[k/U_f^2\]", 
+            zorder=2)
     
     #Formatting
     ax9.set_xlim([0,1])
     ax9.set_xlabel('\[y/h\:[-]\]')
     ax9.set_ylabel(r'\[k/U_f^2\:[-]\]')
-    ax9.grid()
+    ax9.grid(zorder=1)
     fig9.savefig(fname="Task_9_plot.svg")
     plt.close(fig9)
 else:
@@ -381,21 +400,22 @@ rs = tau_mean-rho*nu*du_dy
 
 if replot_tasks["T10"]:
     fig10, ax10 = plt.subplots(figsize=(16, 10))
-    ax10.plot(y/h,
-            rs/U_f**2, 
-            marker = "+", ls="--",
-            label = "Approximation")
-    ax10.plot(y[1:-1]/h,
+    ax10.scatter(y[1:-1]/h,
             np.power(turb_quant_uv*U_f, 2)*rho/U_f**2,
-            marker="x", ls="--",
-            label = "Calculation from measurements")
+            label = "Calculation from measurements", 
+            marker = "+", s=100, linewidth=1.8, zorder=2)
+    ax10.scatter(y/h,
+            rs/U_f**2, 
+            marker = "d", s=80,
+            label = "Approximation", zorder=2)
+    
     
     
     #Formatting
     ax10.set_xlim([0,1])
     ax10.set_xlabel('\[y/h\:[-]\]')
     ax10.set_ylabel(r"\[\frac{-\rho\overline{u^{'}v^{'}}}{U_f^2}\:\:[-]\]")
-    ax10.grid()
+    ax10.grid(zorder=1)
     ax10.legend(loc="upper right")
     fig10.savefig(fname="Task_10_plot.svg")
     plt.close(fig10)
@@ -406,14 +426,14 @@ else:
 if replot_tasks["T11"]:
     fig11, ax11 = plt.subplots(figsize=(16, 10))
     ax11.scatter(y[1:-1]/h,
-                 np.power(turb_quant_uv*U_f, 2)*rho*du_dy[1:-1])
+                 np.power(turb_quant_uv*U_f, 2)*rho*du_dy[1:-1], zorder=2)
     
     #Formatting
     ax11.set_xlim([0,1])
     ax11.set_xlabel('\[y/h\:[-]\]')
     ax11.set_ylabel(r"\[-\rho\overline{u^{'}v^{'}} "
                     r"\cdot \frac{\partial\overline{u}}{\partial y}\:\:[-]\]")
-    ax11.grid()
+    ax11.grid(zorder=1)
     fig11.savefig(fname="Task_11_plot.svg")
     plt.close(fig11)
 else:
