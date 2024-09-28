@@ -25,7 +25,7 @@ mpl.rcParams['axes.prop_cycle'] = mpl.cycler('color', ['k', 'k', 'k', 'k'])
 #                                 + mpl.cycler('linestyle', ['-', '--', '-.', ':'])
 
 #Text sizes
-mpl.rcParams['font.size'] = 20
+mpl.rcParams['font.size'] = 25
 mpl.rcParams['xtick.labelsize'] = 20
 mpl.rcParams['ytick.labelsize'] = 20
 mpl.rcParams['axes.labelsize'] = 25
@@ -44,8 +44,13 @@ mpl.rcParams['text.usetex'] = True          #Use standard latex font
 mpl.rcParams['font.family'] = 'serif'  # LaTeX default font family
 mpl.rcParams["pgf.texsystem"] = "pdflatex"  # Use pdflatex for generating PDFs
 mpl.rcParams["pgf.rcfonts"] = False  # Ignore Matplotlib's default font settings
-mpl.rcParams['text.latex.preamble'] = "\n".join([r'\usepackage{amsmath}',  # Optional, for math symbols
-                                                 r'\usepackage{siunitx}'])
+mpl.rcParams.update({"pgf.preamble": "\n".join([ # plots will use this preamble
+        r"\usepackage[utf8]{inputenc}",
+        r"\usepackage[T1]{fontenc}",
+        r"\usepackage[detect-all,locale=DE]{siunitx}",
+        ])})
+# mpl.rcParams['text.latex.preamble'] = "\n".join([r'\usepackage{amsmath}',  # Optional, for math symbols
+#                                                  r'\usepackage{siunitx}'])
 
 # #Custom overline function (cf. https://tex.stackexchange.com/questions/22100/the-bar-and-overline-commands)
 # #Note: this slows down the code extremely sometimes 
@@ -99,8 +104,8 @@ if replot_tasks["T1"]:
     
     #Formatting
     ax1.set_title('Mean velocity')
-    ax1.set_ylabel('$y\:[m]$')
-    ax1.set_xlabel(r'$\overline{u}\:[m/s]$')
+    ax1.set_ylabel(r'$y\:\unit{[\m]}$')
+    ax1.set_xlabel(r'$\overline{u}\:\unit{[\m/\s]}$')
     ax1.grid(zorder=1)
     
     fname = "Task_1_plot"
@@ -151,8 +156,8 @@ if replot_tasks["T4"]:
             ls="-", c='k', zorder=2)
     
     #Formatting
-    ax4.set_ylabel('$y\:[m]$')
-    ax4.set_xlabel(r'$\overline{u}\:[m/s]$')
+    ax4.set_ylabel(r'$y\:\unit{[\m]}$')
+    ax4.set_xlabel(r'$\overline{u}\:\unit{[\m/\s]}$')
     ax4.set_yscale("log")
     ax4.grid(zorder=1)
     ax4.legend(loc="lower right")
@@ -180,39 +185,36 @@ if replot_tasks["T5"]:
                           label="Approximation function",
                           ls="--", c='k', lw=1.5, zorder=2)
     
-    plt5_lgd1 = plt.legend(handles=[plt5_sc1, plt5_line1[0]], 
-                           loc='upper left')
-    plt5_lgd1 = ax5.add_artist(plt5_lgd1)
+    #Region boundaries
+    ax5.axhline(5, ls="--", c="k", lw=1.4)
+    ax5.axhline(30, ls="--", c="k", lw=1.4)
+    ax5.axhline(.1*h*U_f/nu, ls="--", c="k", lw=1.4)
     
-    #Regions
-    rect_visc_sub = mpl.patches.Rectangle((-10,0), 40, 5, 
-                                          hatch="-\\", fc = "1", alpha = .32,
-                                          ec="k", lw=1,
-                                          label= "Viscous sublayer", zorder=0)
-    rect_visc_buffer = mpl.patches.Rectangle((-10,5), 40, 30-5, 
-                                             hatch="/", fc = "1", alpha = .42,
-                                             ec="k", lw=1,
-                                             label= "Buffer layer", zorder=0)
-    rect_log = mpl.patches.Rectangle((-10,30), 40, .1*h*U_f_est/nu-30, 
-                                     hatch="\\/",  fc = "1", alpha = .32,
-                                     ec="k", lw=1,
-                                     label= "Logarithmic layer", zorder=0)
-    rect_out = mpl.patches.Rectangle((-10, .1*h*U_f_est/nu), 
-                                     40, .9*h*U_f_est/nu, 
-                                     hatch="\\", fc = "1", alpha = .42,
-                                     ec="k", lw=1,
-                                     label= "Outer region", zorder=0)
+    #Annotations for regions
+    arrowstyle = dict(arrowstyle="<->", 
+                      connectionstyle="angle,angleA=90,angleB=0")
+    ax5.text(30,1, " ") #To make space for annotations
+    # # Drawing arrows for the regions
+    ax5.annotate("", (1.02,0), (0,85), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle)
+    ax5.text(25, 3, "Viscous sublayer", ha='left', va='center')
     
-    ax5.add_patch(rect_visc_sub)
-    ax5.add_patch(rect_visc_buffer)
-    ax5.add_patch(rect_log)
-    ax5.add_patch(rect_out)
+    ax5.annotate("", (1.02,.14), (0,170), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle)
+    ax5.text(25, 13, "Buffer layer", ha='left', va='center')
     
-    plt5_lgd2 = plt.legend(handles=[rect_visc_sub, rect_visc_buffer,
-                                    rect_log, rect_out], 
-                           loc='lower right')
-    ax5.add_artist(plt5_lgd2)
+    ax5.annotate("", (1.02,.42), (0,105), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle)
+    ax5.text(25, 50, "Logarithmic layer", ha='left', va='center')
     
+    ax5.annotate("", (1.02,.59), (0,223), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle)
+    ax5.text(25, 300, "Outer region", ha='left', va='center')
+
     #Formatting
     dx_ticks = 2
     ax5.set_ylabel('$y^+$')
@@ -222,6 +224,8 @@ if replot_tasks["T5"]:
     ax5.set_xticks(np.arange(0, int(np.ceil(u_means[-1]/U_f/dx_ticks))*dx_ticks, 
                             dx_ticks))
     ax5.grid(zorder=1)
+    plt.legend(loc='upper left')
+    
     fname = "Task_5_plot"
     fig5.savefig(fname=fname+".svg")
     fig5.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
@@ -245,17 +249,19 @@ def dfunc_3_108(y_p, kappa=.4, A_d=25):
                                                   
 u_vD = integrate.cumulative_trapezoid (y=dfunc_3_108(y_plus, kappa=.4, A_d=25),
                                        x=y_plus)
-# y_plus_vd = np.array([(y_plus[i+1]+y_plus[i])/2 for i in range(len(y_plus)-1)])
 
 if replot_tasks["T6"]:
     if replot_tasks["T5"]:
+        #Clear Approximation function for Log region from plot
+        list(ax5.lines)[0].remove()
+ 
+        #Plot van Driest
         plt6_line1 = ax5.plot(u_vD/U_f,
                                y_plus[1:],
                                label="van Driest velocity", 
-                               marker = "d", ls="--", c='k', lw=1.5, zorder=2)
-        plt5_lgd1 = plt.legend(handles=[plt5_sc1, plt5_line1[0], plt6_line1[0]], 
-                               loc='upper left')
-        plt5_lgd1 = ax5.add_artist(plt5_lgd1)
+                               marker = "v", ms=8, ls="-.", c='k', 
+                               zorder=2)
+        plt.legend(loc='upper left')
         
         fname = "Task_6_plot"
         fig5.savefig(fname=fname+".svg")
@@ -309,51 +315,41 @@ if replot_tasks["T7"]:
                 label=r"$\frac{\sqrt{-\overline{u^{\prime}v^{\prime}}}}{U_f}$",
                 marker = "v", s=100, zorder=2)
     
-# =============================================================================
-#     #Empty scatter (needed for the distribution of the labels in the columns 
-#     # of the legend)
-#     ax7.scatter(1,1, label=' ', c='#ffffff') 
-#     
-#     #Regions
-#     rect_visc_sub = mpl.patches.Rectangle((0,0), 5, 5, 
-#                                           hatch="-\\", fc = "1", alpha = .32,
-#                                           ec="k", lw=1,
-#                                           label= "Viscous sublayer", zorder=0)
-#     rect_visc_buffer = mpl.patches.Rectangle((5, 0), 30-5, 5, 
-#                                              hatch="/", fc = "1", alpha = .42,
-#                                              ec="k", lw=1,
-#                                              label= "Buffer layer")
-#     rect_log = mpl.patches.Rectangle((30,0), .1*h*U_f/nu-30, 5, 
-#                                      hatch="\\/",  fc = "1", alpha = .32,
-#                                      ec="k", lw=1,
-#                                      label= "Logarithmic layer", zorder=0)
-#     rect_out = mpl.patches.Rectangle((.1*h*U_f/nu, 0), 
-#                                      .9*h*U_f/nu, 5, 
-#                                      hatch="\\", fc = "1", alpha = .42,
-#                                      ec="k", lw=1,
-#                                      label= "Outer region", zorder=0)
-#      
-#     ax7.add_patch(rect_visc_sub)
-#     ax7.add_patch(rect_visc_buffer)
-#     ax7.add_patch(rect_log)
-#     ax7.add_patch(rect_out)
-# =============================================================================
-    
     #Region boundaries
-    ax7.axvline(5, ls="--", c="k", lw=1.5)
-    ax7.axvline(30, ls="--", c="k", lw=1.5)
-    ax7.axvline(.1*h*U_f/nu, ls="--", c="k", lw=1.5)
+    ax7.axvline(5, ls="--", c="k", lw=1.4)
+    ax7.axvline(30, ls="--", c="k", lw=1.4)
+    ax7.axvline(.1*h*U_f/nu, ls="--", c="k", lw=1.4)
     
     #Annotations for regions
-    arrowstyle = dict(arrowstyle="->", 
-                      connectionstyle="angle,angleA=0,angleB=90")
+    arrowstyle = dict(arrowstyle="<->", 
+                      connectionstyle="angle,angleA=90,angleB=0")
     ax7.text(0,4.9, " ") #To make space for annotations
-    ax7.annotate("Viscous sublayer", (2.5,4.5), (5,4.85), arrowprops = arrowstyle)
-    ax7.annotate("Buffer layer", (0,4.5), (12,4.6))
-    ax7.annotate("Logarithmic layer", (0,4.5), (55,4.6))
-    ax7.annotate("Outer region", (.1*h*U_f/nu+3, 4.5), (.1*h*U_f/nu+3-15,4.85), 
-                 arrowprops = arrowstyle)
+    # Drawing arrows for the regions
+    ax7.annotate("", (0,1.02), (45, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle)
+    ax7.annotate("Viscous\nsublayer", (0,0), (5,4.7), 
+                 xycoords='data', ha='right', va='bottom')
     
+    ax7.annotate("", (.05,1.02), (225, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle)
+    ax7.annotate("Buffer layer", (0,0), (18,4.7), 
+                 xycoords='data', ha='center', va='bottom')
+    
+    ax7.annotate("", (.3,1.02), (560, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle)
+    ax7.annotate("Logarithmic layer", (0,0), (60,4.7), 
+                 xycoords='data', ha='center', va='bottom')
+    
+    ax7.annotate("", (.1*h*U_f/nu/100,1.02), (70, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', 
+                 arrowprops = dict(arrowstyle="->", 
+                                   connectionstyle="angle,angleA=90,angleB=0"))
+    ax7.annotate("Outer\nregion", (0,0), (.1*h*U_f/nu*1.01,4.7), 
+                 xycoords='data', ha='left', va='bottom')
     
     #Formatting
     ax7.set_xlim([0,100])
@@ -386,8 +382,45 @@ if replot_tasks["T8"]:
                 linewidth=2, zorder=2)
     ax8.scatter(y[1:-1]/h,
                 turb_quant_uv,
-                label=r"$\frac{-\overline{u^{\prime}v^{\prime}}}{U_f^2}$",
+                label=r"$\frac{\sqrt{-\overline{u^{\prime}v^{\prime}}}}{U_f}$",
                 marker = "v", s=100, zorder=2)
+    
+    #Region boundaries
+    ax8.axvline(5/U_f*nu/h, ls="--", c="k", lw=1.4)
+    ax8.axvline(30/U_f*nu/h, ls="--", c="k", lw=1.4)
+    ax8.axvline(.1, ls="--", c="k", lw=1.4)
+    
+    #Annotations for regions
+    arrowstyle_lin = dict(arrowstyle="-", 
+                      connectionstyle="angle,angleA=0,angleB=90")
+    arrowstyle_point = dict(arrowstyle="<->", 
+                      connectionstyle="angle,angleA=90,angleB=0")
+    ax8.text(0,3.2, " ") #To make space for annotations
+    # Drawing arrows for the regions
+    ax8.annotate("Viscous sublayer", (0.002,1.03), (40, 90), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax8.annotate("", (.004,1.02), (28, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax8.annotate("Buffer layer", (0.018,1.03), (40, 55), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax8.annotate("", (.03,1.02), (65, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax8.annotate("Logarithmic layer", (0.065,1.03), (40, 20), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax8.annotate("", (.1,1.02), (805, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax8.annotate("Outer region", (0.55,1.03), (0, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='center', va='bottom')
     
     #Formatting
     ax8.set_xlim([0,1])
@@ -413,10 +446,48 @@ if replot_tasks["T9"]:
     ax9.scatter(y[1:-1]/h,
             tke,
             label=r"\[k/U_f^2\]", 
-            zorder=2)
+            marker = "d", s=70, zorder=2)
+    
+    #Region boundaries
+    ax9.axvline(5/U_f*nu/h, ls="--", c="k", lw=1.4)
+    ax9.axvline(30/U_f*nu/h, ls="--", c="k", lw=1.4)
+    ax9.axvline(.1, ls="--", c="k", lw=1.4)
+    
+    #Annotations for regions
+    arrowstyle_lin = dict(arrowstyle="-", 
+                      connectionstyle="angle,angleA=0,angleB=90")
+    arrowstyle_point = dict(arrowstyle="<->", 
+                      connectionstyle="angle,angleA=90,angleB=0")
+    ax9.text(0,3.2, " ") #To make space for annotations
+    # Drawing arrows for the regions
+    ax9.annotate("Viscous sublayer", (0.002,1.03), (40, 90), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax9.annotate("", (.004,1.02), (28, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax9.annotate("Buffer layer", (0.018,1.03), (40, 55), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax9.annotate("", (.03,1.02), (65, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax9.annotate("Logarithmic layer", (0.065,1.03), (40, 20), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax9.annotate("", (.1,1.02), (805, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax9.annotate("Outer region", (0.55,1.03), (0, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='center', va='bottom')
     
     #Formatting
     ax9.set_xlim([0,1])
+    ax9.set_ylim([0,np.ceil(np.max(tke))])
     ax9.set_xlabel('$y/h$')
     ax9.set_ylabel(r'$\frac{k}{U_f^2}$')
     ax9.grid(zorder=1)
@@ -443,12 +514,10 @@ if replot_tasks["T10"]:
             np.power(turb_quant_uv*U_f, 2)*rho/U_f**2,
             label = "Calculation from measurements", 
             marker = "+", s=100, linewidth=1.8, zorder=2)
-    ax10.scatter(y/h,
+    ax10.plot(y/h,
             rs/U_f**2, 
-            marker = "d", s=80,
-            label = "Approximation", zorder=2)
-    
-    
+            marker = "v", ms=8, ls="--", c='k', lw=1.5, zorder=2,
+            label = "Approximation")
     
     #Formatting
     ax10.set_xlim([0,1])
@@ -469,13 +538,53 @@ else:
 if replot_tasks["T11"]:
     fig11, ax11 = plt.subplots(figsize=(16, 10))
     ax11.scatter(y[1:-1]/h,
-                 np.power(turb_quant_uv*U_f, 2)*rho*du_dy[1:-1], zorder=2)
+                 np.power(turb_quant_uv*U_f, 2)*rho*du_dy[1:-1],
+                 marker = "d", s=70, zorder=2)
+    
+    #Region boundaries
+    ax11.axvline(5/U_f*nu/h, ls="--", c="k", lw=1.4)
+    ax11.axvline(30/U_f*nu/h, ls="--", c="k", lw=1.4)
+    ax11.axvline(.1, ls="--", c="k", lw=1.4)
+    
+    #Annotations for regions
+    arrowstyle_lin = dict(arrowstyle="-", 
+                      connectionstyle="angle,angleA=0,angleB=90")
+    arrowstyle_point = dict(arrowstyle="<->", 
+                      connectionstyle="angle,angleA=90,angleB=0")
+    ax11.text(0,3.2, " ") #To make space for annotations
+    # Drawing arrows for the regions
+    ax11.annotate("Viscous sublayer", (0.002,1.03), (40, 90), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax11.annotate("", (.004,1.02), (28, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax11.annotate("Buffer layer", (0.018,1.03), (40, 55), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax11.annotate("", (.03,1.02), (65, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax11.annotate("Logarithmic layer", (0.065,1.03), (40, 20), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax11.annotate("", (.1,1.02), (805, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax11.annotate("Outer region", (0.55,1.03), (0, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='center', va='bottom')
+    
     
     #Formatting
     ax11.set_xlim([0,1])
     ax11.set_xlabel('$y/h$')
     ax11.set_ylabel(r"$-\rho\overline{u^{\prime}v^{\prime}}"
-                    r"\cdot \frac{\partial\overline{u}}{\partial y}$")
+                    r"\cdot \frac{\partial\overline{u}}{\partial y}"
+                    + r"\:\unit{\left[\frac{\kg}{\m\cdot\s}\right]}$")
     ax11.grid(zorder=1)
     
     fname = "Task_11_plot"
