@@ -895,16 +895,28 @@
 \pgfsetstrokecolor{currentstroke}%
 \pgfsetstrokeopacity{0.800000}%
 \pgfsetdash{}{0pt}%
+<<<<<<< HEAD
 \pgfpathmoveto{\pgfqpoint{8.591712in}{6.490243in}}%
+=======
+\pgfpathmoveto{\pgfqpoint{8.716147in}{6.490243in}}%
+>>>>>>> 50cd13fc10c18b73df739baa0cd6dae9c5d52333
 \pgfpathlineto{\pgfqpoint{14.195814in}{6.490243in}}%
 \pgfpathquadraticcurveto{\pgfqpoint{14.265258in}{6.490243in}}{\pgfqpoint{14.265258in}{6.559687in}}%
 \pgfpathlineto{\pgfqpoint{14.265258in}{7.492718in}}%
 \pgfpathquadraticcurveto{\pgfqpoint{14.265258in}{7.562163in}}{\pgfqpoint{14.195814in}{7.562163in}}%
+<<<<<<< HEAD
 \pgfpathlineto{\pgfqpoint{8.591712in}{7.562163in}}%
 \pgfpathquadraticcurveto{\pgfqpoint{8.522267in}{7.562163in}}{\pgfqpoint{8.522267in}{7.492718in}}%
 \pgfpathlineto{\pgfqpoint{8.522267in}{6.559687in}}%
 \pgfpathquadraticcurveto{\pgfqpoint{8.522267in}{6.490243in}}{\pgfqpoint{8.591712in}{6.490243in}}%
 \pgfpathlineto{\pgfqpoint{8.591712in}{6.490243in}}%
+=======
+\pgfpathlineto{\pgfqpoint{8.716147in}{7.562163in}}%
+\pgfpathquadraticcurveto{\pgfqpoint{8.646703in}{7.562163in}}{\pgfqpoint{8.646703in}{7.492718in}}%
+\pgfpathlineto{\pgfqpoint{8.646703in}{6.559687in}}%
+\pgfpathquadraticcurveto{\pgfqpoint{8.646703in}{6.490243in}}{\pgfqpoint{8.716147in}{6.490243in}}%
+\pgfpathlineto{\pgfqpoint{8.716147in}{6.490243in}}%
+>>>>>>> 50cd13fc10c18b73df739baa0cd6dae9c5d52333
 \pgfpathclose%
 \pgfusepath{stroke,fill}%
 \end{pgfscope}%
@@ -925,7 +937,11 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
+<<<<<<< HEAD
 \pgfsys@transformshift{9.008378in}{7.271364in}%
+=======
+\pgfsys@transformshift{9.132814in}{7.271364in}%
+>>>>>>> 50cd13fc10c18b73df739baa0cd6dae9c5d52333
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
 \end{pgfscope}%
@@ -933,7 +949,11 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
+<<<<<<< HEAD
 \pgftext[x=9.633378in,y=7.180218in,left,base]{\color{textcolor}{\rmfamily\fontsize{25.000000}{30.000000}\selectfont\catcode`\^=\active\def^{\ifmmode\sp\else\^{}\fi}\catcode`\%=\active\def%{\%}Calculations from measurements}}%
+=======
+\pgftext[x=9.757814in,y=7.180218in,left,base]{\color{textcolor}{\rmfamily\fontsize{25.000000}{30.000000}\selectfont\catcode`\^=\active\def^{\ifmmode\sp\else\^{}\fi}\catcode`\%=\active\def%{\%}Calculation from measurements}}%
+>>>>>>> 50cd13fc10c18b73df739baa0cd6dae9c5d52333
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -942,9 +962,15 @@
 \definecolor{currentstroke}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{currentstroke}%
 \pgfsetdash{{5.550000pt}{2.400000pt}}{0.000000pt}%
+<<<<<<< HEAD
 \pgfpathmoveto{\pgfqpoint{8.661156in}{6.817870in}}%
 \pgfpathlineto{\pgfqpoint{9.008378in}{6.817870in}}%
 \pgfpathlineto{\pgfqpoint{9.355601in}{6.817870in}}%
+=======
+\pgfpathmoveto{\pgfqpoint{8.785592in}{6.817870in}}%
+\pgfpathlineto{\pgfqpoint{9.132814in}{6.817870in}}%
+\pgfpathlineto{\pgfqpoint{9.480036in}{6.817870in}}%
+>>>>>>> 50cd13fc10c18b73df739baa0cd6dae9c5d52333
 \pgfusepath{stroke}%
 \end{pgfscope}%
 \begin{pgfscope}%
@@ -965,7 +991,11 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
+<<<<<<< HEAD
 \pgfsys@transformshift{9.008378in}{6.817870in}%
+=======
+\pgfsys@transformshift{9.132814in}{6.817870in}%
+>>>>>>> 50cd13fc10c18b73df739baa0cd6dae9c5d52333
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
 \end{pgfscope}%
@@ -973,7 +1003,11 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
+<<<<<<< HEAD
 \pgftext[x=9.633378in,y=6.696342in,left,base]{\color{textcolor}{\rmfamily\fontsize{25.000000}{30.000000}\selectfont\catcode`\^=\active\def^{\ifmmode\sp\else\^{}\fi}\catcode`\%=\active\def%{\%}Approximation}}%
+=======
+\pgftext[x=9.757814in,y=6.696342in,left,base]{\color{textcolor}{\rmfamily\fontsize{25.000000}{30.000000}\selectfont\catcode`\^=\active\def^{\ifmmode\sp\else\^{}\fi}\catcode`\%=\active\def%{\%}Approximation}}%
+>>>>>>> 50cd13fc10c18b73df739baa0cd6dae9c5d52333
 \end{pgfscope}%
 \end{pgfpicture}%
 \makeatother%
