@@ -14,6 +14,9 @@ from scipy import integrate
 
 #%%Global plot settings
 
+#Figure size:
+mpl.rcParams['figure.figsize'] = (16, 8)  
+
 #Lines and markers
 mpl.rcParams['lines.linewidth'] = 1.2
 mpl.rcParams['lines.markersize'] = 10
@@ -44,13 +47,15 @@ mpl.rcParams['text.usetex'] = True          #Use standard latex font
 mpl.rcParams['font.family'] = 'serif'  # LaTeX default font family
 mpl.rcParams["pgf.texsystem"] = "pdflatex"  # Use pdflatex for generating PDFs
 mpl.rcParams["pgf.rcfonts"] = False  # Ignore Matplotlib's default font settings
+mpl.rcParams['text.latex.preamble'] = "\n".join([r'\usepackage{amsmath}',  # Optional, for math symbols
+                                                 r'\usepackage{siunitx}'])
 mpl.rcParams.update({"pgf.preamble": "\n".join([ # plots will use this preamble
         r"\usepackage[utf8]{inputenc}",
         r"\usepackage[T1]{fontenc}",
+        r"\usepackage{amsmath}",
         r"\usepackage[detect-all,locale=DE]{siunitx}",
         ])})
-# mpl.rcParams['text.latex.preamble'] = "\n".join([r'\usepackage{amsmath}',  # Optional, for math symbols
-#                                                  r'\usepackage{siunitx}'])
+
 
 # #Custom overline function (cf. https://tex.stackexchange.com/questions/22100/the-bar-and-overline-commands)
 # #Note: this slows down the code extremely sometimes 
@@ -99,7 +104,7 @@ y = np.append(np.insert(y, 0, 0), .07)
 u_means = np.append(np.insert(u_means, 0, 0), .3)
 
 if replot_tasks["T1"]:
-    fig1, ax1 = plt.subplots(figsize=(16, 10))
+    fig1, ax1 = plt.subplots()
     ax1.scatter(u_means, y, s=150, linewidths=1.5, zorder=2)
     
     #Formatting
@@ -148,7 +153,7 @@ popt = np.polyfit (np.log(y[i_log]), u_means[i_log], deg=1)
 func_log_layer = lambda y: popt[0]*np.log(y) + popt[1]
 
 if replot_tasks["T4"]:
-    fig4, ax4 = plt.subplots(figsize=(10, 10))
+    fig4, ax4 = plt.subplots()
     ax4.scatter(u_means, y, label = "Measurements", s=100, zorder=2)
     ax4.plot(func_log_layer(y[i_log]),
             y[i_log],
@@ -177,7 +182,7 @@ y_plus = y*U_f/nu
 #%% Action Item 5
 
 if replot_tasks["T5"]:
-    fig5, ax5 = plt.subplots(figsize=(16, 10))
+    fig5, ax5 = plt.subplots()
     plt5_sc1 = ax5.scatter(u_means/U_f, y_plus, label = "Measurements", 
                            s=170, linewidths=1.8, zorder=2)
     plt5_line1 = ax5.plot(func_log_layer(y[i_log])/U_f,
@@ -299,7 +304,7 @@ del tt
 
 
 if replot_tasks["T7"]:
-    fig7, ax7 = plt.subplots(figsize=(16, 10))
+    fig7, ax7 = plt.subplots()
     
     ax7.scatter(y_plus[1:-1],
                 turb_quant_u,
@@ -370,7 +375,7 @@ else:
 
 #%% Action Item 8
 if replot_tasks["T8"]:
-    fig8, ax8 = plt.subplots(figsize=(16, 10))
+    fig8, ax8 = plt.subplots()
     ax8.scatter(y[1:-1]/h,
                 turb_quant_u,
                 label=r"$\frac{\sqrt{\overline{u^{\prime 2}}}}{U_f}$",
@@ -442,7 +447,7 @@ else:
 tke = .5*(u_var_mean+v_var_mean*2.8)/U_f**2
 
 if replot_tasks["T9"]:
-    fig9, ax9 = plt.subplots(figsize=(16, 10))
+    fig9, ax9 = plt.subplots()
     ax9.scatter(y[1:-1]/h,
             tke,
             label=r"\[k/U_f^2\]", 
@@ -509,7 +514,7 @@ tau_mean = rho*U_f**2*(1-y/h)
 rs = tau_mean-rho*nu*du_dy
 
 if replot_tasks["T10"]:
-    fig10, ax10 = plt.subplots(figsize=(16, 10))
+    fig10, ax10 = plt.subplots()
     ax10.scatter(y[1:-1]/h,
             np.power(turb_quant_uv*U_f, 2)*rho/U_f**2,
             label = "Calculation from measurements", 
@@ -536,7 +541,7 @@ else:
 
 #%% Action Item 11
 if replot_tasks["T11"]:
-    fig11, ax11 = plt.subplots(figsize=(16, 10))
+    fig11, ax11 = plt.subplots()
     ax11.scatter(y[1:-1]/h,
                  np.power(turb_quant_uv*U_f, 2)*rho*du_dy[1:-1],
                  marker = "d", s=70, zorder=2)
