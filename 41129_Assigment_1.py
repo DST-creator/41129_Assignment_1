@@ -108,7 +108,6 @@ if replot_tasks["T1"]:
     ax1.scatter(u_means, y, s=150, linewidths=1.5, zorder=2)
     
     #Formatting
-    ax1.set_title('Mean velocity')
     ax1.set_ylabel(r'$y\:\unit{[\m]}$')
     ax1.set_xlabel(r'$\overline{u}\:\unit{[\m/\s]}$')
     ax1.grid(zorder=1)
@@ -200,22 +199,22 @@ if replot_tasks["T5"]:
                       connectionstyle="angle,angleA=90,angleB=0")
     ax5.text(30,1, " ") #To make space for annotations
     # # Drawing arrows for the regions
-    ax5.annotate("", (1.02,0), (0,85), 
+    ax5.annotate("", (1.02,0), (0,68), 
                  xycoords='axes fraction', textcoords='offset points', 
                  va='top', arrowprops = arrowstyle)
     ax5.text(25, 3, "Viscous sublayer", ha='left', va='center')
     
-    ax5.annotate("", (1.02,.14), (0,170), 
+    ax5.annotate("", (1.02,.14), (0,136), 
                  xycoords='axes fraction', textcoords='offset points', 
                  va='top', arrowprops = arrowstyle)
     ax5.text(25, 13, "Buffer layer", ha='left', va='center')
     
-    ax5.annotate("", (1.02,.42), (0,105), 
+    ax5.annotate("", (1.02,.42), (0,84), 
                  xycoords='axes fraction', textcoords='offset points', 
                  va='top', arrowprops = arrowstyle)
     ax5.text(25, 50, "Logarithmic layer", ha='left', va='center')
     
-    ax5.annotate("", (1.02,.59), (0,223), 
+    ax5.annotate("", (1.02,.59), (0,178), 
                  xycoords='axes fraction', textcoords='offset points', 
                  va='top', arrowprops = arrowstyle)
     ax5.text(25, 300, "Outer region", ha='left', va='center')
@@ -237,9 +236,63 @@ if replot_tasks["T5"]:
     fig5.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
     
     if not replot_tasks["T6"]:
-        plt.close(fig5)
+        plt.close(fig5)  
+        
+    #Plot over y/h
+    fig5_1, ax5_1 = plt.subplots()
+    ax5_1.scatter(y/h, u_means/U_f, s=170, linewidths=1.8, zorder=2)
+    
+    #Region boundaries
+    ax5_1.axvline(5/U_f*nu/h, ls="--", c="k", lw=1.4)
+    ax5_1.axvline(30/U_f*nu/h, ls="--", c="k", lw=1.4)
+    ax5_1.axvline(.1, ls="--", c="k", lw=1.4)
+    
+    #Annotations for regions
+    arrowstyle_lin = dict(arrowstyle="-", 
+                      connectionstyle="angle,angleA=0,angleB=90")
+    arrowstyle_point = dict(arrowstyle="<->", 
+                      connectionstyle="angle,angleA=90,angleB=0")
+    ax5_1.text(0,3.2, " ") #To make space for annotations
+    # Drawing arrows for the regions
+    ax5_1.annotate("Viscous sublayer", (0.002,1.03), (40, 90), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax5_1.annotate("", (.004,1.02), (28, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax5_1.annotate("Buffer layer", (0.018,1.03), (40, 55), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax5_1.annotate("", (.03,1.02), (65, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax5_1.annotate("Logarithmic layer", (0.065,1.03), (40, 20), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='left', va='bottom', arrowprops = arrowstyle_lin)
+    
+    ax5_1.annotate("", (.1,1.02), (805, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 va='top', arrowprops = arrowstyle_point)
+    ax5_1.annotate("Outer region", (0.55,1.03), (0, 0), 
+                 xycoords='axes fraction', textcoords='offset points', 
+                 ha='center', va='bottom')
+
+    #Formatting
+    dx_ticks = 2
+    ax5_1.set_xlim([0,1])
+    ax5_1.set_xlabel('$y/h$')
+    ax5_1.set_ylabel(r'$\frac{\overline{u}}{U_f}$')
+    ax5_1.grid(zorder=1)
+    
+    fname = "Task_5_1_plot"
+    fig5_1.savefig(fname=fname+".svg")
+    fig5_1.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+    fig5_1.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
+    plt.close(fig5_1)
 else:
-    print("Plot for Task 5 not replotted")
+    print("Plots for Task 5 not replotted")
 
 #%% Action Item 6
 
