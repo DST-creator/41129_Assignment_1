@@ -23,9 +23,6 @@ mpl.rcParams['lines.markersize'] = 10
 mpl.rcParams['scatter.marker'] = "+"
 mpl.rcParams['lines.color'] = "k"
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler('color', ['k', 'k', 'k', 'k'])
-# Cycle through linestyles with color black instead of different colors
-# mpl.rcParams['axes.prop_cycle'] = mpl.cycler('color', ['k', 'k', 'k', 'k'])\
-#                                 + mpl.cycler('linestyle', ['-', '--', '-.', ':'])
 
 #Text sizes
 mpl.rcParams['font.size'] = 25
@@ -36,7 +33,8 @@ mpl.rcParams['axes.titlesize'] = 30
 mpl.rcParams['legend.fontsize'] = 25
 
 #Padding
-mpl.rcParams['figure.subplot.top'] = .94    #Distance between suptitle and subplots
+mpl.rcParams['figure.subplot.top'] = .94    #Distance between suptitle 
+                                            # and subplots
 mpl.rcParams['xtick.major.pad'] = 5         
 mpl.rcParams['ytick.major.pad'] = 5
 # mpl.rcParams['ztick.major.pad'] = 5
@@ -46,8 +44,10 @@ mpl.rcParams['axes.labelpad'] = 20
 mpl.rcParams['text.usetex'] = True          #Use standard latex font
 mpl.rcParams['font.family'] = 'serif'  # LaTeX default font family
 mpl.rcParams["pgf.texsystem"] = "pdflatex"  # Use pdflatex for generating PDFs
-mpl.rcParams["pgf.rcfonts"] = False  # Ignore Matplotlib's default font settings
-mpl.rcParams['text.latex.preamble'] = "\n".join([r'\usepackage{amsmath}',  # Optional, for math symbols
+mpl.rcParams["pgf.rcfonts"] = False  # Ignore Matplotlib's default 
+                                     # font settings
+mpl.rcParams['text.latex.preamble'] = "\n".join([r'\usepackage{amsmath}',  
+                                                 # Optional, for math symbols
                                                  r'\usepackage{siunitx}'])
 mpl.rcParams.update({"pgf.preamble": "\n".join([ # plots will use this preamble
         r"\usepackage[utf8]{inputenc}",
@@ -55,13 +55,6 @@ mpl.rcParams.update({"pgf.preamble": "\n".join([ # plots will use this preamble
         r"\usepackage{amsmath}",
         r"\usepackage[detect-all,locale=DE]{siunitx}",
         ])})
-
-
-# #Custom overline function (cf. https://tex.stackexchange.com/questions/22100/the-bar-and-overline-commands)
-# #Note: this slows down the code extremely sometimes 
-# plt.rcParams['text.latex.preamble'] = r"""
-# \newcommand{\ols}[1]{\mskip.5\thinmuskip\overline{\mskip-.5\thinmuskip {#1} \mskip-.5\thinmuskip}\mskip.5\thinmuskip}""" 
-
 #Export
 mpl.rcParams['savefig.bbox'] = "tight"
 
@@ -82,7 +75,9 @@ h = .07         #[m]
 b = .3          #[m]
 nu = 1e-6       #[m^2/s]
 
-structs = scipy.io.loadmat("Exercise1.mat", struct_as_record=False, squeeze_me=True)["Channel"]
+structs = scipy.io.loadmat("Exercise1.mat", 
+                           struct_as_record=False, 
+                           squeeze_me=True)["Channel"]
 
 #%% Action item 1
 #Calculate mean velocities for all channels
@@ -105,17 +100,18 @@ u_means = np.append(np.insert(u_means, 0, 0), .3)
 
 if replot_tasks["T1"]:
     fig1, ax1 = plt.subplots()
-    ax1.scatter(u_means, y, s=150, linewidths=1.5, zorder=2)
+    ax1.scatter(y, u_means, s=150, linewidths=1.5, zorder=2)
     
     #Formatting
-    ax1.set_ylabel(r'$y\:\unit{[\m]}$')
-    ax1.set_xlabel(r'$\overline{u}\:\unit{[\m/\s]}$')
+    ax1.set_xlabel(r'$y\:\unit{[\m]}$')
+    ax1.set_ylabel(r'$\overline{u}\:\unit{[\m/\s]}$')
     ax1.grid(zorder=1)
     
     fname = "Task_1_plot"
     fig1.savefig(fname=fname+".svg")
     fig1.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig1.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
+    fig1.savefig(fname+".pgf")                     # Save PGF file for text 
+                                                   # inclusion in LaTeX
     plt.close(fig1)
 else:
     print("Plot for Task 1 not replotted")
@@ -153,23 +149,24 @@ func_log_layer = lambda y: popt[0]*np.log(y) + popt[1]
 
 if replot_tasks["T4"]:
     fig4, ax4 = plt.subplots()
-    ax4.scatter(u_means, y, label = "Measurements", s=100, zorder=2)
-    ax4.plot(func_log_layer(y[i_log]),
-            y[i_log],
-            label="Approximation function",
-            ls="-", c='k', zorder=2)
+    ax4.scatter(y, u_means, label = "Measurements", s=100, zorder=2)
+    ax4.plot(y[i_log],
+             func_log_layer(y[i_log]),
+             label="Approximation function",
+             ls="-", c='k', zorder=2)
     
     #Formatting
-    ax4.set_ylabel(r'$y\:\unit{[\m]}$')
-    ax4.set_xlabel(r'$\overline{u}\:\unit{[\m/\s]}$')
-    ax4.set_yscale("log")
+    ax4.set_xlabel(r'$y\:\unit{[\m]}$')
+    ax4.set_ylabel(r'$\overline{u}\:\unit{[\m/\s]}$')
+    ax4.set_xscale("log")
     ax4.grid(zorder=1)
-    ax4.legend(loc="lower right")
+    ax4.legend(loc="lower right", framealpha=1)
     
     fname = "Task_4_plot"
     fig4.savefig(fname=fname+".svg")
     fig4.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig4.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
+    fig4.savefig(fname+".pgf")                     # Save PGF file for text 
+                                                   # inclusion in LaTeX
     plt.close(fig4)
 else:
     print("Plot for Task 4 not replotted")
@@ -182,58 +179,62 @@ y_plus = y*U_f/nu
 
 if replot_tasks["T5"]:
     fig5, ax5 = plt.subplots()
-    plt5_sc1 = ax5.scatter(u_means/U_f, y_plus, label = "Measurements", 
+    plt5_sc1 = ax5.scatter(y_plus, u_means/U_f, label = "Measurements", 
                            s=170, linewidths=1.8, zorder=2)
-    plt5_line1 = ax5.plot(func_log_layer(y[i_log])/U_f,
-                          y_plus[i_log],
-                          label="Approximation function",
-                          ls="--", c='k', lw=1.5, zorder=2)
     
     #Region boundaries
-    ax5.axhline(5, ls="--", c="k", lw=1.4)
-    ax5.axhline(30, ls="--", c="k", lw=1.4)
-    ax5.axhline(.1*h*U_f/nu, ls="--", c="k", lw=1.4)
+    ax5.axvline(5, ls="--", c="k", lw=1.4)
+    ax5.axvline(30, ls="--", c="k", lw=1.4)
+    ax5.axvline(.1*h*U_f/nu, ls="--", c="k", lw=1.4)
     
     #Annotations for regions
     arrowstyle = dict(arrowstyle="<->", 
                       connectionstyle="angle,angleA=90,angleB=0")
-    ax5.text(30,1, " ") #To make space for annotations
-    # # Drawing arrows for the regions
-    ax5.annotate("", (1.02,0), (0,68), 
+    ax5.text(0,26, " ") #To make space for annotations
+    # Drawing arrows for the regions
+    ax5.annotate("", (0,1.02), (45, 0), 
                  xycoords='axes fraction', textcoords='offset points', 
                  va='top', arrowprops = arrowstyle)
-    ax5.text(25, 3, "Viscous sublayer", ha='left', va='center')
+    ax5.annotate("Viscous\nsublayer", (0,0), (5,25), 
+                 xycoords='data', ha='right', va='bottom')
     
-    ax5.annotate("", (1.02,.14), (0,136), 
+    ax5.annotate("", (.05,1.02), (225, 0), 
                  xycoords='axes fraction', textcoords='offset points', 
                  va='top', arrowprops = arrowstyle)
-    ax5.text(25, 13, "Buffer layer", ha='left', va='center')
+    ax5.annotate("Buffer layer", (0,0), (18,25), 
+                 xycoords='data', ha='center', va='bottom')
     
-    ax5.annotate("", (1.02,.42), (0,84), 
+    ax5.annotate("", (.3,1.02), (560, 0), 
                  xycoords='axes fraction', textcoords='offset points', 
                  va='top', arrowprops = arrowstyle)
-    ax5.text(25, 50, "Logarithmic layer", ha='left', va='center')
+    ax5.annotate("Logarithmic layer", (0,0), (60,25), 
+                 xycoords='data', ha='center', va='bottom')
     
-    ax5.annotate("", (1.02,.59), (0,178), 
+    ax5.annotate("", (.1*h*U_f/nu/100,1.02), (70, 0), 
                  xycoords='axes fraction', textcoords='offset points', 
-                 va='top', arrowprops = arrowstyle)
-    ax5.text(25, 300, "Outer region", ha='left', va='center')
+                 va='top', 
+                 arrowprops = dict(arrowstyle="->", 
+                                   connectionstyle=
+                                   "angle,angleA=90,angleB=0"))
+    ax5.annotate("Outer\nregion", (0,0), (.1*h*U_f/nu*1.01,25), 
+                 xycoords='data', ha='left', va='bottom')
 
     #Formatting
     dx_ticks = 2
-    ax5.set_ylabel('$y^+$')
-    ax5.set_xlabel(r'$\frac{\overline{u}}{U_f}$')
-    ax5.set_yscale("log")
-    ax5.set_xlim([0, max(u_means/U_f)*1.05])
-    ax5.set_xticks(np.arange(0, int(np.ceil(u_means[-1]/U_f/dx_ticks))*dx_ticks, 
+    ax5.set_xlim([0,100])
+    ax5.set_xlabel('$y^+$')
+    ax5.set_ylabel(r'$\frac{\overline{u}}{U_f}$')
+    ax5.set_ylim([0, max(u_means/U_f)*1.05])
+    ax5.set_yticks(np.arange(0, int(np.ceil(u_means[-1]/U_f/dx_ticks))
+                                 *dx_ticks, 
                             dx_ticks))
     ax5.grid(zorder=1)
-    plt.legend(loc='upper left')
     
     fname = "Task_5_plot"
     fig5.savefig(fname=fname+".svg")
     fig5.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig5.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
+    fig5.savefig(fname+".pgf")                     # Save PGF file for text 
+                                                   # inclusion in LaTeX
     
     if not replot_tasks["T6"]:
         plt.close(fig5)  
@@ -289,7 +290,8 @@ if replot_tasks["T5"]:
     fname = "Task_5_1_plot"
     fig5_1.savefig(fname=fname+".svg")
     fig5_1.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig5_1.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
+    fig5_1.savefig(fname+".pgf")                     # Save PGF file for text 
+                                                     # inclusion in LaTeX
     plt.close(fig5_1)
 else:
     print("Plots for Task 5 not replotted")
@@ -300,12 +302,15 @@ def dfunc_3_108(y_p, kappa=.4, A_d=25):
     u_mean = 2*U_f*np.divide (1,
                               1 + np.sqrt(1 + 4*np.power(kappa,2)
                                                *np.power(y_p,2)
-                                               *np.power(1-np.exp(-y_p/A_d), 2)
+                                               *np.power(1-np.exp(-y_p/A_d), 
+                                                         2)
                                           )
                               )
     return u_mean
                                                   
-u_vD = integrate.cumulative_trapezoid (y=dfunc_3_108(y_plus, kappa=.4, A_d=25),
+u_vD = integrate.cumulative_trapezoid (y=dfunc_3_108(y_plus, 
+                                                     kappa=.4, 
+                                                     A_d=25),
                                        x=y_plus)
 
 if replot_tasks["T6"]:
@@ -314,17 +319,17 @@ if replot_tasks["T6"]:
         list(ax5.lines)[0].remove()
  
         #Plot van Driest
-        plt6_line1 = ax5.plot(u_vD/U_f,
-                               y_plus[1:],
+        plt6_line1 = ax5.plot(y_plus[1:], u_vD/U_f,
                                label="van Driest velocity", 
                                marker = "v", ms=8, ls="-.", c='k', 
                                zorder=2)
-        plt.legend(loc='upper left')
+        plt.legend(loc='upper left', framealpha=1)
         
         fname = "Task_6_plot"
         fig5.savefig(fname=fname+".svg")
         fig5.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-        fig5.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
+        fig5.savefig(fname+".pgf")                     # Save PGF file for text 
+                                                       # inclusion in LaTeX
         plt.close(fig5)
     else:
         print("Task 6 can only be replotted if Task 5 is plotted")
@@ -420,8 +425,8 @@ if replot_tasks["T7"]:
     fname = "Task_7_plot"
     fig7.savefig(fname=fname+".svg")
     fig7.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig7.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
-    
+    fig7.savefig(fname+".pgf")                     # Save PGF file for text 
+                                                   # inclusion in LaTeX
     plt.close(fig7)
 else:
     print("Plot for Task 7 not replotted")
@@ -485,12 +490,13 @@ if replot_tasks["T8"]:
     ax8.set_xlabel('$y/h$')
     ax8.set_ylabel(r'Turbulence quantities')
     ax8.grid(zorder=1)
-    ax8.legend(loc="upper right")
+    ax8.legend(loc="upper right", framealpha=1)
     
     fname = "Task_8_plot"
     fig8.savefig(fname=fname+".svg")
     fig8.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig8.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
+    fig8.savefig(fname+".pgf")                     # Save PGF file for text 
+                                                   # inclusion in LaTeX
     plt.close(fig8)
 else:
     print("Plot for Task 8 not replotted")
@@ -553,7 +559,8 @@ if replot_tasks["T9"]:
     fname = "Task_9_plot"
     fig9.savefig(fname=fname+".svg")
     fig9.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig9.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
+    fig9.savefig(fname+".pgf")                     # Save PGF file for text 
+                                                   # inclusion in LaTeX
     plt.close(fig9)
 else:
     print("Plot for Task 9 not replotted")
@@ -582,12 +589,13 @@ if replot_tasks["T10"]:
     ax10.set_xlabel('$y/h$')
     ax10.set_ylabel(r"$\frac{-\rho\overline{u^{\prime}v^{\prime}}}{U_f^2}$")
     ax10.grid(zorder=1)
-    ax10.legend(loc="upper right")
+    ax10.legend(loc="upper right", framealpha=1)
     
     fname = "Task_10_plot"
     fig10.savefig(fname=fname+".svg")
     fig10.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig10.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
+    fig10.savefig(fname+".pgf")                     # Save PGF file for text 
+                                                    # inclusion in LaTeX
     plt.close(fig10)
 else:
     print("Plot for Task 10 not replotted")
@@ -648,7 +656,8 @@ if replot_tasks["T11"]:
     fname = "Task_11_plot"
     fig11.savefig(fname=fname+".svg")
     fig11.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig11.savefig(fname+".pgf")                     # Save PGF file for text inclusion in LaTeX
+    fig11.savefig(fname+".pgf")                     # Save PGF file for text 
+                                                    # inclusion in LaTeX
     plt.close(fig11)
 else:
     print("Plot for Task 11 not replotted")
