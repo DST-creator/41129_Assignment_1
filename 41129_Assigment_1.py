@@ -10,8 +10,6 @@ import os
 from scipy import optimize
 from scipy import integrate
 
-
-
 #%%Global plot settings
 
 #Figure size:
@@ -23,6 +21,14 @@ mpl.rcParams['lines.markersize'] = 10
 mpl.rcParams['scatter.marker'] = "+"
 mpl.rcParams['lines.color'] = "k"
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler('color', ['k', 'k', 'k', 'k'])
+
+mss = {".":dict(marker = ".", ms=3, mec="k"),
+       "+":dict(marker = "+", ms=10, mec="k"), 
+       "d":dict(marker = "d", ms=2, mec="k"), 
+       "1":dict(marker = "1", ms=10, mec="k"), 
+       "v":dict(marker = "v", ms=2, mec="k"),
+       "default": dict(marker = "+", ms=10, mec="k")
+       }
 
 #Text sizes
 mpl.rcParams['font.size'] = 25
@@ -79,7 +85,7 @@ structs = scipy.io.loadmat("Exercise1.mat",
                            struct_as_record=False, 
                            squeeze_me=True)["Channel"]
 
-#%% Action item 1
+#%% Action item 1 - mean velocities
 #Calculate mean velocities for all channels
 struct_len = len(structs)
 u_means = np.zeros(struct_len)
@@ -99,6 +105,7 @@ y = np.append(np.insert(y, 0, 0), .07)
 u_means = np.append(np.insert(u_means, 0, 0), .3)
 
 if replot_tasks["T1"]:
+    # Plot u_mean vs y
     fig1, ax1 = plt.subplots()
     ax1.scatter(y, u_means, s=150, linewidths=1.5, zorder=2)
     
@@ -107,22 +114,22 @@ if replot_tasks["T1"]:
     ax1.set_ylabel(r'$\overline{u}\:\unit{[\m/\s]}$')
     ax1.grid(zorder=1)
     
-    fname = "Task_1_plot"
+    fname = "T01_u_vs_y"
     fig1.savefig(fname=fname+".svg")
-    fig1.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig1.savefig(fname+".pgf")                     # Save PGF file for text 
+    # fig1.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+    # fig1.savefig(fname+".pgf")                     # Save PGF file for text 
                                                    # inclusion in LaTeX
     plt.close(fig1)
 else:
     print("Plot for Task 1 not replotted")
 
-#%% Action item 2
+#%% Action item 2 - depth-averaged velocity
 #Calculate depth-averaged velocity
 
 V = 1/h* integrate.trapezoid(u_means, y)
 #V should be 0.264 roughly
 
-#%% Action item 3
+#%% Action item 3 - friction velocity
 #Calculate the friction velocity
 
 A = h*b                     #[m^2]
@@ -133,7 +140,7 @@ Re = r_h*V/nu               #[-]
 f = .0557/Re**.25           #[-]
 U_f_est = np.sqrt(f/2)*V        #[m/s]
 
-#%% Action item 4
+#%% Action item 4 - logarithmic region
 
 #Calculate y+
 y_plus = y*U_f_est/nu
@@ -148,6 +155,7 @@ popt = np.polyfit (np.log(y[i_log]), u_means[i_log], deg=1)
 func_log_layer = lambda y: popt[0]*np.log(y) + popt[1]
 
 if replot_tasks["T4"]:
+    #Plot velocity profile of logarithmic region
     fig4, ax4 = plt.subplots()
     ax4.scatter(y, u_means, label = "Measurements", s=100, zorder=2)
     ax4.plot(y[i_log],
@@ -162,10 +170,10 @@ if replot_tasks["T4"]:
     ax4.grid(zorder=1)
     ax4.legend(loc="lower right", framealpha=1)
     
-    fname = "Task_4_plot"
+    fname = "T04_u_vs_y_log_region"
     fig4.savefig(fname=fname+".svg")
-    fig4.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig4.savefig(fname+".pgf")                     # Save PGF file for text 
+    # fig4.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+    # fig4.savefig(fname+".pgf")                     # Save PGF file for text 
                                                    # inclusion in LaTeX
     plt.close(fig4)
 else:
@@ -175,9 +183,10 @@ else:
 U_f = popt[0]/2.5
 y_plus = y*U_f/nu
 
-#%% Action Item 5
+#%% Action Item 5 - Plot velocity over y^+ (incl. boundaries)
 
 if replot_tasks["T5"]:
+    #Plot u over y^+
     fig5, ax5 = plt.subplots()
     plt5_sc1 = ax5.scatter(y_plus, u_means/U_f, label = "Measurements", 
                            s=170, linewidths=1.8, zorder=2)
@@ -230,16 +239,16 @@ if replot_tasks["T5"]:
                             dx_ticks))
     ax5.grid(zorder=1)
     
-    fname = "Task_5_plot"
+    fname = "T05_u_vs_y+"
     fig5.savefig(fname=fname+".svg")
-    fig5.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig5.savefig(fname+".pgf")                     # Save PGF file for text 
+    # fig5.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+    # fig5.savefig(fname+".pgf")                     # Save PGF file for text 
                                                    # inclusion in LaTeX
     
     if not replot_tasks["T6"]:
         plt.close(fig5)  
         
-    #Plot over y/h
+    #Plot u over y/h
     fig5_1, ax5_1 = plt.subplots()
     ax5_1.scatter(y/h, u_means/U_f, s=170, linewidths=1.8, zorder=2)
     
@@ -287,16 +296,16 @@ if replot_tasks["T5"]:
     ax5_1.set_ylabel(r'$\frac{\overline{u}}{U_f}$')
     ax5_1.grid(zorder=1)
     
-    fname = "Task_5_1_plot"
+    fname = "T05_u_vs_yh"
     fig5_1.savefig(fname=fname+".svg")
-    fig5_1.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig5_1.savefig(fname+".pgf")                     # Save PGF file for text 
+    # fig5_1.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+    # fig5_1.savefig(fname+".pgf")                     # Save PGF file for text 
                                                      # inclusion in LaTeX
     plt.close(fig5_1)
 else:
     print("Plots for Task 5 not replotted")
 
-#%% Action Item 6
+#%% Action Item 6 - van Driest velocity
 
 def dfunc_3_108(y_p, kappa=.4, A_d=25):
     u_mean = 2*U_f*np.divide (1,
@@ -325,10 +334,10 @@ if replot_tasks["T6"]:
                                zorder=2)
         plt.legend(loc='upper left', framealpha=1)
         
-        fname = "Task_6_plot"
+        fname = "T06_u_vanDriest_vs_y+"
         fig5.savefig(fname=fname+".svg")
-        fig5.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-        fig5.savefig(fname+".pgf")                     # Save PGF file for text 
+        # fig5.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+        # fig5.savefig(fname+".pgf")                     # Save PGF file for text 
                                                        # inclusion in LaTeX
         plt.close(fig5)
     else:
@@ -336,7 +345,7 @@ if replot_tasks["T6"]:
 else:
     print("Plot for Task 6 not replotted")
 
-#%% Action Item 7
+#%% Action Item 7 - turbulence quantities
 
 #Calculate turbulence quantities
 u_var_mean = np.zeros(struct_len)
@@ -362,6 +371,7 @@ del tt
 
 
 if replot_tasks["T7"]:
+    #Plot turbulence quantities vs y^+
     fig7, ax7 = plt.subplots()
     
     ax7.scatter(y_plus[1:-1],
@@ -422,31 +432,44 @@ if replot_tasks["T7"]:
     ax7.grid(zorder=1)
     ax7.legend(loc="upper right", framealpha=1, ncols=3)
     
-    fname = "Task_7_plot"
+    fname = "T07_TurbQuant_vs_y+"
     fig7.savefig(fname=fname+".svg")
-    fig7.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig7.savefig(fname+".pgf")                     # Save PGF file for text 
+    # fig7.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+    # fig7.savefig(fname+".pgf")                     # Save PGF file for text 
                                                    # inclusion in LaTeX
     plt.close(fig7)
 else:
     print("Plot for Task 7 not replotted")
 
-#%% Action Item 8
+#%% Action Item 8 - turbulence quantities vs y/h
 if replot_tasks["T8"]:
+    #Plot turbulence quantities vs y/h
     fig8, ax8 = plt.subplots()
-    ax8.scatter(y[1:-1]/h,
+    ax8.plot(y[1:-1]/h,
                 turb_quant_u,
                 label=r"$\frac{\sqrt{\overline{u^{\prime 2}}}}{U_f}$",
-                marker = "d", s=80, zorder=2)
-    ax8.scatter(y[1:-1]/h,
+                ls="--", marker = "d", ms=7, mec="k", zorder=2)
+    ax8.plot(y[1:-1]/h,
                 turb_quant_v,
                 label=r"$\frac{\sqrt{\overline{v^{\prime 2}}}}{U_f}$",
-                marker = "h", s=100, facecolor="none", edgecolor="k", 
-                linewidth=2, zorder=2)
-    ax8.scatter(y[1:-1]/h,
+                ls="--", **mss["+"], zorder=2)
+    ax8.plot(y[1:-1]/h,
                 turb_quant_uv,
                 label=r"$\frac{\sqrt{-\overline{u^{\prime}v^{\prime}}}}{U_f}$",
-                marker = "v", s=100, zorder=2)
+                ls="--", marker = "v", ms=7, mec="k", zorder=2)
+    # ax8.scatter(y[1:-1]/h,
+    #             turb_quant_u,
+    #             label=r"$\frac{\sqrt{\overline{u^{\prime 2}}}}{U_f}$",
+    #             marker = "d", s=80, zorder=2)
+    # ax8.scatter(y[1:-1]/h,
+    #             turb_quant_v,
+    #             label=r"$\frac{\sqrt{\overline{v^{\prime 2}}}}{U_f}$",
+    #             marker = "h", s=100, facecolor="none", edgecolor="k", 
+    #             linewidth=2, zorder=2)
+    # ax8.scatter(y[1:-1]/h,
+    #             turb_quant_uv,
+    #             label=r"$\frac{\sqrt{-\overline{u^{\prime}v^{\prime}}}}{U_f}$",
+    #             marker = "v", s=100, zorder=2)
     
     #Region boundaries
     ax8.axvline(5/U_f*nu/h, ls="--", c="k", lw=1.4)
@@ -492,20 +515,21 @@ if replot_tasks["T8"]:
     ax8.grid(zorder=1)
     ax8.legend(loc="upper right", framealpha=1)
     
-    fname = "Task_8_plot"
+    fname = "T08_TurbQuant_vs_yh"
     fig8.savefig(fname=fname+".svg")
-    fig8.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig8.savefig(fname+".pgf")                     # Save PGF file for text 
+    # fig8.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+    # fig8.savefig(fname+".pgf")                     # Save PGF file for text 
                                                    # inclusion in LaTeX
     plt.close(fig8)
 else:
     print("Plot for Task 8 not replotted")
     
-#%% Action Item 9
+#%% Action Item 9 - turbulent kinetic energy
 #Calculate the turbulent kinetic energy
 tke = .5*(u_var_mean+v_var_mean*2.8)/U_f**2
 
 if replot_tasks["T9"]:
+    #Plot tke vs y/h
     fig9, ax9 = plt.subplots()
     ax9.scatter(y[1:-1]/h,
             tke,
@@ -556,16 +580,16 @@ if replot_tasks["T9"]:
     ax9.set_ylabel(r'$\frac{k}{U_f^2}$')
     ax9.grid(zorder=1)
     
-    fname = "Task_9_plot"
+    fname = "T09_tke_vs_yh"
     fig9.savefig(fname=fname+".svg")
-    fig9.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig9.savefig(fname+".pgf")                     # Save PGF file for text 
+    # fig9.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+    # fig9.savefig(fname+".pgf")                     # Save PGF file for text 
                                                    # inclusion in LaTeX
     plt.close(fig9)
 else:
     print("Plot for Task 9 not replotted")
     
-#%% Action Item 10
+#%% Action Item 10 - Reynolds stress
 #Calculate the Reynolds stress
 rho = 1000 #[kg/m^3] - assumed water density
 du_dy = np.gradient(u_means, y)
@@ -574,6 +598,7 @@ tau_mean = rho*U_f**2*(1-y/h)
 rs = tau_mean-rho*nu*du_dy
 
 if replot_tasks["T10"]:
+    #Plot Reynolds stress vs y/h
     fig10, ax10 = plt.subplots()
     ax10.scatter(y[1:-1]/h,
             np.power(turb_quant_uv*U_f, 2)*rho/U_f**2,
@@ -591,16 +616,16 @@ if replot_tasks["T10"]:
     ax10.grid(zorder=1)
     ax10.legend(loc="upper right", framealpha=1)
     
-    fname = "Task_10_plot"
+    fname = "T10_rs_vs_yh"
     fig10.savefig(fname=fname+".svg")
-    fig10.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig10.savefig(fname+".pgf")                     # Save PGF file for text 
+    # fig10.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+    # fig10.savefig(fname+".pgf")                     # Save PGF file for text 
                                                     # inclusion in LaTeX
     plt.close(fig10)
 else:
     print("Plot for Task 10 not replotted")
 
-#%% Action Item 11
+#%% Action Item 11 - Turbulent energy production
 if replot_tasks["T11"]:
     fig11, ax11 = plt.subplots()
     ax11.scatter(y[1:-1]/h,
@@ -653,10 +678,10 @@ if replot_tasks["T11"]:
                     + r"\:\unit{\left[\frac{\kg}{\m\cdot\s}\right]}$")
     ax11.grid(zorder=1)
     
-    fname = "Task_11_plot"
+    fname = "T11_TurbProd_vs_yh"
     fig11.savefig(fname=fname+".svg")
-    fig11.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
-    fig11.savefig(fname+".pgf")                     # Save PGF file for text 
+    # fig11.savefig(fname+".pdf", format="pdf")       # Save PDF for inclusion
+    # fig11.savefig(fname+".pgf")                     # Save PGF file for text 
                                                     # inclusion in LaTeX
     plt.close(fig11)
 else:
